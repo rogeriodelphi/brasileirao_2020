@@ -43,14 +43,16 @@
                     <thead>
                         <tr>
                             <th>Nome</th>
-                            <th>Pontos</th>
+                            <th>
+                                <a href="#" @click.prevent="orientacao = orientacao=='desc'? 'asc':'desc'">Pontos</a>
+                            </th>
                             <th>GM</th>
                             <th>GS</th>
                             <th>Saldo</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="time in times">
+                        <tr v-for="time in timesOrdenados">
                             <td>
                                 <img :src="time.escudo" alt="" class="escudo">            
                                 {{ time.nome | ucWords }}
@@ -76,12 +78,12 @@
                         {{ time.nome | ucWords }}                        
                     </li>
                 </ul>    
-
             </div>
         </div>
     </div>
     <!-- development version, includes helpful console warnings --> 
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>   
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4/lodash.min.js"></script>   
     
     <!-- production version, optimized for size and speed -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2"></script> -->
@@ -139,7 +141,8 @@
     new Vue({
         el: "#app",
         data: {
-            gols: 3,
+            gols: '3',
+            orientacao: 'desc',
             times: [
                 new Time('palmeiras', 'assets/palmeiras_60x60.png'),
                 new Time('Internacional', 'assets/internacional_60x60.png'),
@@ -175,11 +178,14 @@
             visao: 'tabela'
         },
         computed: {
-            timesLibertadores(){
+            timesLibertadores() {
                 return this.times.slice(0,6)
             },
-            timesRebaixados(){
-                return this.times.slice(17,21)
+            timesRebaixados() {
+                return this.times.slice(16,20)
+            },
+            timesOrdenados() {
+                return _.orderBy(this.times, 'pontos', this.orientacao)
             }
         },
         methods: {
